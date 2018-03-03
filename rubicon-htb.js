@@ -31,7 +31,7 @@ var RenderService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
-var Inspector = require('schema-inspector.js');
+var Inspector = require('schema-inspector');
 var PartnerSpecificValidator = require('rubicon-htb-validator.js');
 var Scribe = require('scribe.js');
 //? }
@@ -93,6 +93,8 @@ function RubiconModule(configs) {
 
     var __pageFirstPartyData;
 
+    var _digiTrustId;
+
     /* =====================================
      * Functions
      * ---------------------------------- */
@@ -134,7 +136,7 @@ function RubiconModule(configs) {
                 continue;
             }
             if (__sizeToSizeIdMapping[sizeKey] === Number(rubiconSize)) {
-                return Size.stringToArray(sizeKey)[0];
+                return Size.stringToArray(sizeKey);
             }
         }
         //? if(DEBUG) {
@@ -254,6 +256,35 @@ function RubiconModule(configs) {
         return firstPartyData;
     }
 
+    function _getDigiTrustQueryParams() {
+        if (configs.digitrustId) {
+            _digiTrustId = configs.digitrustId;
+        }
+            function getDigiTrustId() {
+                if (!Browser.isTopFrame()) {
+                    try {
+                    var _window = window.top;
+                    } catch(e) {
+                        console.log("impossible to reach top window");
+                    }
+                } else {
+                    var _window = window;
+                }
+                var digiTrustUser =  (_digiTrustId || _window.DigiTrust.getUser({member: 'T9QSFKPDN9'})) 
+                return digiTrustUser || null;
+            }
+            var digiTrustId = getDigiTrustId();
+            // Verify there is an ID and this user has not opted out
+            if (!digiTrustId || (digiTrustId.privacy && digiTrustId.privacy.optout)) {
+            return {};
+            }
+            var _dt = {
+                id: digiTrustId.id,
+                keyv: digiTrustId.keyv,
+                pref: 0
+            }
+            return _dt;
+        }    
     /**
      * Generates the request URL to the endpoint for the xSlots in the given
      * returnParcels.
@@ -363,7 +394,8 @@ function RubiconModule(configs) {
             zone_id: parcel.xSlotRef.zoneId, //jshint ignore:line
             kw: 'rp.fastlane',
             tk_flint: 'custom', //jshint ignore:line
-            rand: Math.random()
+            rand: Math.random(),
+            dt: _getDigiTrustQueryParams()
         };
 
         for (var pageInv in pageFirstPartyData.inventory) {
@@ -755,7 +787,7 @@ function RubiconModule(configs) {
          * ---------------------------------- */
 
         //? if (TEST) {
-        __profile: __profile,
+        profile: __profile,
         __baseUrl: __baseUrl,
         //? }
 
@@ -765,7 +797,8 @@ function RubiconModule(configs) {
         setFirstPartyData: setFirstPartyData,
 
         //? if (TEST) {
-        __parseResponse: __parseResponse
+        parseResponse: __parseResponse,
+        generateRequestObj: __generateRequestObj
         //? }
     };
 

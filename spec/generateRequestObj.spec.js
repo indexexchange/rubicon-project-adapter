@@ -64,7 +64,7 @@ describe('generateRequestObj', function () {
     var inspector = require('schema-inspector');
     var proxyquire = require('proxyquire').noCallThru();
     var libraryStubData = require('./support/libraryStubData.js');
-    var partnerModule = proxyquire('../rubicon-project-htb.js', libraryStubData);
+    var partnerModule = proxyquire('../rubicon-htb.js', libraryStubData);
     var partnerConfig = require('./support/mockPartnerConfig.json');
     var expect = require('chai').expect;
     /* -------------------------------------------------------------------- */

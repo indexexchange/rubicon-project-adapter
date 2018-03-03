@@ -28,7 +28,13 @@ var libraryStubData = {
         getPageUrl: function () {
             return 'http://www.indexexchange.com';
         },
-        topWindow: mock.getWindow()
+        topWindow: mock.getWindow(),
+        isTopFrame: function(){
+            if (typeof window === "undefined") {
+                window = MockBrowser.createWindow();
+            }
+            return window.top === window.self;
+        }
     },
     'classify.js': {
         derive: function (baseClass, derivedClass) {
@@ -47,6 +53,13 @@ var libraryStubData = {
         arrayToString: function (arr) {
             return arr[0] + 'x' + arr[1];
         },
+        stringToArray: function (arr) {
+                var result = []; 
+                result.push(Number(arr.split("x")[0]));
+                result.push(Number(arr.split("x")[1]));
+                //result.push(arr.replace('x',','));
+            return result;
+        },        
     },
     'network.js': {
         isXhrSupported: function () {
@@ -126,7 +139,22 @@ var libraryStubData = {
             return (new Date()).getTime();
         }
     },
-    'utilities.js': {},
+    'utilities.js': {
+        isArray: function(array){
+            return Array.isArray(array);
+        },
+        isNumber: function(value){
+            return !Number.isNaN(value);
+        },
+        isString: function(string){
+            if (typeof myVar === 'string' || myVar instanceof String){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    },
     'whoopsie.js': function () {
         return null;
     },
@@ -143,7 +171,7 @@ var libraryStubData = {
             return;
         },
     },
-    'rubicon-project-htb-validator.js': function () {
+    'rubicon-htb-validator.js': function () {
         return null;
     }
 };

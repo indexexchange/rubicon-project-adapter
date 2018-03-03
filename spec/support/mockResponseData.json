@@ -1,5 +1,23 @@
 {
-    "bid": [],
-    "pass": [],
-    "deals": []
+    "bid": [ 
+        {"status":"ok","deal": "test!","account_id":10800,"site_id":67058,"zone_id":457360,"size_id":2,"tracking":"","inventory":{},"ads":[{"status":"ok","deal": "test!","impression_id":"378e3cb1-10de-4af4-b8a7-60ab81b2c159","size_id":"2","ad_id":"3212456","dealid": "test!","advertiser":329902,"network":2249,"creative_id":"2249:88288288","type":"script","script":"console.log('ee');","campaign_id":69245,"rtb_rule_id":1441842,"cpm":1.191990,"targeting":[{"key":"rpfl_10800","values":["2_tier0110"]}]}]},
+        {"status":"ok","deal": "test!","account_id":10800,"site_id":67058,"zone_id":457360,"size_id":2,"tracking":"","inventory":{},"ads":[{"status":"ok","deal": "test!","impression_id":"378e3cb1-10de-4af4-b8a7-60ab81b2c159","size_id":"2","ad_id":"3212456","dealid": "test!","advertiser":329902,"network":2249,"creative_id":"2249:88288288","type":"script","script":"console.log('ee');","campaign_id":69245,"rtb_rule_id":1441842,"cpm":1.191990,"targeting":[{"key":"rpfl_10800","values":["2_tier0110"]}]}]},
+        {"status":"ok","deal": "test!","account_id":10800,"site_id":67058,"zone_id":457360,"size_id":2,"tracking":"","inventory":{},"ads":[{"status":"ok","deal": "test!","impression_id":"378e3cb1-10de-4af4-b8a7-60ab81b2c159","size_id":"2","ad_id":"3212456","dealid": "test!","advertiser":329902,"network":2249,"creative_id":"2249:88288288","type":"script","script":"console.log('ee');","campaign_id":69245,"rtb_rule_id":1441842,"cpm":1.191990,"targeting":[{"key":"rpfl_10800","values":["2_tier0110"]}]}]}
+    ],
+    "pass": [ 
+        {
+            "pass": true
+        },
+        {
+            "pass": true
+        },
+        {
+            "pass": true
+        }                
+    ],
+    "deals": [
+         {"status":"ok","deal": "test!","account_id":10800,"site_id":67058,"zone_id":457360,"size_id":2,"tracking":"","inventory":{},"ads":[{"status":"ok","deal": "test!","impression_id":"378e3cb1-10de-4af4-b8a7-60ab81b2c159","size_id":"2","ad_id":"3212456","advertiser":329902,"network":2249,"creative_id":"2249:88288288","type":"script","script":"console.log('ee');","campaign_id":69245,"rtb_rule_id":1441842,"cpm":1.191990,"targeting":[{"key":"rpfl_10800","values":["2_tier0110"]}]}]},
+         {"status":"ok","deal": "test!","account_id":10800,"site_id":67058,"zone_id":457360,"size_id":2,"tracking":"","inventory":{},"ads":[{"status":"ok","deal": "test!","impression_id":"378e3cb1-10de-4af4-b8a7-60ab81b2c159","size_id":"2","ad_id":"3212456","advertiser":329902,"network":2249,"creative_id":"2249:88288288","type":"script","script":"console.log('ee');","campaign_id":69245,"rtb_rule_id":1441842,"cpm":1.191990,"targeting":[{"key":"rpfl_10800","values":["2_tier0110"]}]}]},
+         {"status":"ok","deal": "test!","account_id":10800,"site_id":67058,"zone_id":457360,"size_id":2,"tracking":"","inventory":{},"ads":[{"status":"ok","deal": "test!","impression_id":"378e3cb1-10de-4af4-b8a7-60ab81b2c159","size_id":"2","ad_id":"3212456","advertiser":329902,"network":2249,"creative_id":"2249:88288288","type":"script","script":"console.log('ee');","campaign_id":69245,"rtb_rule_id":1441842,"cpm":1.191990,"targeting":[{"key":"rpfl_10800","values":["2_tier0110"]}]}]}
+    ]
 }

@@ -44,6 +44,7 @@ function generateReturnParcels(profile, partnerConfig) {
                     htSlot: htSlot,
                     ref: "",
                     xSlotRef: partnerConfig.xSlots[xSlotName],
+                    xSlotName: xSlotName,
                     requestId: '_' + Date.now()
                 });
             }
@@ -82,7 +83,7 @@ describe('parseResponse', function () {
     var inspector = require('schema-inspector');
     var proxyquire = require('proxyquire').noCallThru();
     var libraryStubData = require('./support/libraryStubData.js');
-    var partnerModule = proxyquire('../rubicon-project-htb.js', libraryStubData);
+    var partnerModule = proxyquire('../rubicon-htb.js', libraryStubData);
     var partnerConfig = require('./support/mockPartnerConfig.json');
     var fs = require('fs');
     var parseJson = require('parse-json');
@@ -127,10 +128,8 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
-
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
-
+                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);             
                 var result = inspector.validate({
                     type: 'object',
                     properties: {
@@ -168,6 +167,7 @@ describe('parseResponse', function () {
                         },
                         size: {
                             type: 'array',
+                            exactLength: 2,
                         },
                         adm: {
                             type: 'string',
@@ -181,6 +181,35 @@ describe('parseResponse', function () {
         });
 
         /* ---------- ADD MORE TEST CASES TO TEST AGAINST REAL VALUES ------------*/
+        it('response size should be in request sizes array', function () {
+
+            /* IF SRA, parse all parcels at once */
+            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);            
+              
+            for (var i = 0; i < returnParcels.length; i++) {
+                var sizesExpectedArray=[];
+                var testResult = false;
+                
+                var sizesParcels = returnParcels[i].xSlotRef.sizes;
+                for (var j = 0; j < sizesParcels.length; j++){
+                    //console.log(sizesParcels[2*j]);
+                    sizesExpectedArray.push(sizesParcels[j][0] + 'x' + sizesParcels[j][1]);
+                }
+                
+                /* IF MRA, parse one parcel at a time */
+                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                var testSize  = returnParcels[i].size[0] + 'x' + returnParcels[i].size[1];
+
+                if (sizesExpectedArray.indexOf(testSize) != -1 ){
+                     testResult = true;
+                }
+                else {
+                    console.error ("the response size "+testSize+" is not matching one of the equest sizes "+sizesExpectedArray)
+                }
+                expect(testResult).to.be.true;
+            }
+        });
+                /* ---------- ADD MORE TEST CASES TO TEST AGAINST REAL VALUES ------------*/
         it('each parcel should have the correct values set', function () {
 
             /* IF SRA, parse all parcels at once */
@@ -217,7 +246,7 @@ describe('parseResponse', function () {
             } else if (partnerProfile.architecture === 0) {
                 /* IF MRA, parse one parcel at a time */
                 for (var i = 0; i < mockData.length; i++) {
-                    expectedAdEntry[i] = getExpectedAdEntry(mockData[i]);
+                    expectedAdEntry[i] = getExpectedAdEntry(mockData)[i];
 
                     partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
 
@@ -365,7 +394,7 @@ describe('parseResponse', function () {
                                         minLength: 1
                                     }
                                 },
-                                [partnerModule.profile.targetingKeys.pmid]: {
+                                [partnerModule.profile.targetingKeys.om]: {
                                     type: 'array',
                                     exactLength: 1,
                                     items: {
@@ -445,14 +474,15 @@ describe('parseResponse', function () {
         /* -----------------------------------------------------------------------*/
     });
 
+/*
     describe('should correctly parse dealid when no price was sent back: ', function () {
 
         beforeEach(function () {
-            /* spy on RenderService.registerAd function, so that we can test it is called */
+            // spy on RenderService.registerAd function, so that we can test it is called 
             registerAd = sinon.spy(libraryStubData["space-camp.js"].services.RenderService, 'registerAd');
             returnParcels = generateReturnParcels(partnerModule.profile, partnerConfig);
 
-            /* Get mock response data from our responseData file */
+            // Get mock response data from our responseData file 
             responseData = JSON.parse(fs.readFileSync(path.join(__dirname, './support/mockResponseData.json')));
             mockData = responseData.dealid;
         });
@@ -464,7 +494,7 @@ describe('parseResponse', function () {
         it('registerAd should be called with correct adEntry', function () {
             var i, expectedAdEntry = [];
 
-            /* IF SRA, parse all parcels at once */
+            // IF SRA, parse all parcels at once 
             if (partnerProfile.architecture === 1 || partnerProfile.architecture === 2) {
                 expectedAdEntry = getExpectedAdEntry(mockData);
 
@@ -474,7 +504,7 @@ describe('parseResponse', function () {
                     expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i]));
                 }
             } else if (partnerProfile.architecture === 0) {
-                /* IF MRA, parse one parcel at a time */
+                // IF MRA, parse one parcel at a time 
                 for (var i = 0; i < mockData.length; i++) {
                     expectedAdEntry[i] = getExpectedAdEntry(mockData[i]);
 
@@ -486,5 +516,5 @@ describe('parseResponse', function () {
                 }
             }
         });
-    });
+    }); */
 });
