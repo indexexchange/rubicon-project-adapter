@@ -56,12 +56,15 @@ var libraryStubData = {
         stringToArray: function (arr) {
                 var result = []; 
                 var temp = [];
+                var temp2 = [];
                 temp = arr.split(",");
                 for (var i = 0; i < temp.length; i++) {
-                result.push(temp[i].replace("x",","));
+                temp2.push(temp[i].replace("x",","));
+                }
+                for (var i = 0; i < temp2.length; i++) {
+                result.push(new Array(Number(temp2[i].split(",")[0]), Number(temp2[i].split(",")[1])));
                 }
             return result;
-        };
         },        
     },
     'network.js': {

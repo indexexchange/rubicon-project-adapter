@@ -31,7 +31,7 @@ var RenderService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
-var Inspector = require('schema-inspector.js');
+var Inspector = require('schema-inspector');
 var PartnerSpecificValidator = require('rubicon-htb-validator.js');
 var Scribe = require('scribe.js');
 //? }
@@ -136,7 +136,7 @@ function RubiconModule(configs) {
                 continue;
             }
             if (__sizeToSizeIdMapping[sizeKey] === Number(rubiconSize)) {
-                return Size.stringToArray(sizeKey);
+                return Size.stringToArray(sizeKey)[0];
             }
         }
         //? if(DEBUG) {

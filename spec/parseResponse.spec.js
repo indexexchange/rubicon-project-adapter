@@ -97,7 +97,7 @@ describe('parseResponse', function () {
 
     /* Instantiate your partner module */
     var partnerModule = partnerModule(partnerConfig);
-    var partnerProfile = partnerModule.profile;
+    var partnerProfile = partnerModule.__profile;
 
     /* Generate dummy return parcels based on MRA partner profile */
     var returnParcels;
@@ -110,7 +110,7 @@ describe('parseResponse', function () {
             /* spy on RenderService.registerAd function, so that we can test it is called */
             registerAd = sinon.spy(libraryStubData["space-camp.js"].services.RenderService, 'registerAd');
 
-            returnParcels = generateReturnParcels(partnerModule.profile, partnerConfig);
+            returnParcels = generateReturnParcels(partnerModule.__profile, partnerConfig);
 
             /* Get mock response data from our responseData file */
             responseData = JSON.parse(fs.readFileSync(path.join(__dirname, './support/mockResponseData.json')));
@@ -129,7 +129,7 @@ describe('parseResponse', function () {
 
             for (var i = 0; i < returnParcels.length; i++) {
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);             
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);         
                 var result = inspector.validate({
                     type: 'object',
                     properties: {
@@ -140,7 +140,7 @@ describe('parseResponse', function () {
                         targeting: {
                             type: 'object',
                             properties: {
-                                [partnerModule.profile.targetingKeys.id]: {
+                                [partnerModule.__profile.targetingKeys.id]: {
                                     type: 'array',
                                     exactLength: 1,
                                     items: {
@@ -148,7 +148,7 @@ describe('parseResponse', function () {
                                         minLength: 1
                                     }
                                 },
-                                [partnerModule.profile.targetingKeys.om]: {
+                                [partnerModule.__profile.targetingKeys.om]: {
                                     type: 'array',
                                     exactLength: 1,
                                     items: {
@@ -193,12 +193,12 @@ describe('parseResponse', function () {
                 var sizesParcels = returnParcels[i].xSlotRef.sizes;
                 for (var j = 0; j < sizesParcels.length; j++){
                     //console.log(sizesParcels[2*j]);
-                    sizesExpectedArray.push(sizesParcels[j][0] + 'x' + sizesParcels[j][1]);
+                    sizesExpectedArray.push(sizesParcels[j][0] + ',' + sizesParcels[j][1]);
                 }
                 
                 /* IF MRA, parse one parcel at a time */
                 if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
-                var testSize  = returnParcels[i].size[0] + 'x' + returnParcels[i].size[1];
+                var testSize  = returnParcels[i].size[0]+ ',' + returnParcels[i].size[1];;
 
                 if (sizesExpectedArray.indexOf(testSize) != -1 ){
                      testResult = true;
@@ -264,7 +264,7 @@ describe('parseResponse', function () {
         beforeEach(function () {
             /* spy on RenderService.registerAd function, so that we can test it is called */
             registerAd = sinon.spy(libraryStubData["space-camp.js"].services.RenderService, 'registerAd');
-            returnParcels = generateReturnParcels(partnerModule.profile, partnerConfig);
+            returnParcels = generateReturnParcels(partnerModule.__profile, partnerConfig);
 
             /* Get mock response data from our responseData file */
             responseData = JSON.parse(fs.readFileSync(path.join(__dirname, './support/mockResponseData.json')));
@@ -347,7 +347,7 @@ describe('parseResponse', function () {
         beforeEach(function () {
             /* spy on RenderService.registerAd function, so that we can test it is called */
             registerAd = sinon.spy(libraryStubData["space-camp.js"].services.RenderService, 'registerAd');
-            returnParcels = generateReturnParcels(partnerModule.profile, partnerConfig);
+            returnParcels = generateReturnParcels(partnerModule.__profile, partnerConfig);
 
             /* Get mock response data from our responseData file */
             responseData = JSON.parse(fs.readFileSync(path.join(__dirname, './support/mockResponseData.json')));
@@ -378,7 +378,7 @@ describe('parseResponse', function () {
                         targeting: {
                             type: 'object',
                             properties: {
-                                [partnerModule.profile.targetingKeys.id]: {
+                                [partnerModule.__profile.targetingKeys.id]: {
                                     type: 'array',
                                     exactLength: 1,
                                     items: {
@@ -386,7 +386,7 @@ describe('parseResponse', function () {
                                         minLength: 1
                                     }
                                 },
-                                [partnerModule.profile.targetingKeys.pm]: {
+                                [partnerModule.__profile.targetingKeys.pm]: {
                                     type: 'array',
                                     exactLength: 1,
                                     items: {
@@ -394,7 +394,7 @@ describe('parseResponse', function () {
                                         minLength: 1
                                     }
                                 },
-                                [partnerModule.profile.targetingKeys.om]: {
+                                [partnerModule.__profile.targetingKeys.om]: {
                                     type: 'array',
                                     exactLength: 1,
                                     items: {
@@ -480,7 +480,7 @@ describe('parseResponse', function () {
         beforeEach(function () {
             // spy on RenderService.registerAd function, so that we can test it is called 
             registerAd = sinon.spy(libraryStubData["space-camp.js"].services.RenderService, 'registerAd');
-            returnParcels = generateReturnParcels(partnerModule.profile, partnerConfig);
+            returnParcels = generateReturnParcels(partnerModule.__profile, partnerConfig);
 
             // Get mock response data from our responseData file 
             responseData = JSON.parse(fs.readFileSync(path.join(__dirname, './support/mockResponseData.json')));

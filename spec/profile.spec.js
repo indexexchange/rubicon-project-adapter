@@ -36,7 +36,7 @@ describe('Partner Profile', function () {
 
     /* Instantiate your partner module */
     var partnerModule = partnerModule(partnerConfig);
-    var partnerProfile = partnerModule.profile;
+    var partnerProfile = partnerModule.__profile;
 
     /* partner module profile tests */
     var profile = partnerProfile;
