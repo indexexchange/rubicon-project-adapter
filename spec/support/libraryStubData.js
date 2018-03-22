@@ -64,7 +64,7 @@ var libraryStubData = {
                 for (var i = 0; i < temp2.length; i++) {
                 result.push(new Array(Number(temp2[i].split(",")[0]), Number(temp2[i].split(",")[1])));
                 }
-            return result;
+            return result[0];
         },        
     },
     'network.js': {
