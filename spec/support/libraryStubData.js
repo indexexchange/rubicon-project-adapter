@@ -55,10 +55,13 @@ var libraryStubData = {
         },
         stringToArray: function (arr) {
                 var result = []; 
-                result.push(Number(arr.split("x")[0]));
-                result.push(Number(arr.split("x")[1]));
-                //result.push(arr.replace('x',','));
+                var temp = [];
+                temp = arr.split(",");
+                for (var i = 0; i < temp.length; i++) {
+                result.push(temp[i].replace("x",","));
+                }
             return result;
+        };
         },        
     },
     'network.js': {

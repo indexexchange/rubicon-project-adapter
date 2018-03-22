@@ -125,11 +125,11 @@ describe('parseResponse', function () {
         it('each parcel should have the required fields set', function () {
 
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);             
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);             
                 var result = inspector.validate({
                     type: 'object',
                     properties: {
@@ -184,7 +184,7 @@ describe('parseResponse', function () {
         it('response size should be in request sizes array', function () {
 
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);            
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);            
               
             for (var i = 0; i < returnParcels.length; i++) {
                 var sizesExpectedArray=[];
@@ -197,7 +197,7 @@ describe('parseResponse', function () {
                 }
                 
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
                 var testSize  = returnParcels[i].size[0] + 'x' + returnParcels[i].size[1];
 
                 if (sizesExpectedArray.indexOf(testSize) != -1 ){
@@ -213,12 +213,12 @@ describe('parseResponse', function () {
         it('each parcel should have the correct values set', function () {
 
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
 
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                 /* Add test cases to test against each of the parcel's set fields
                  * to make sure the response was parsed correctly.
@@ -238,7 +238,7 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture === 1 || partnerProfile.architecture === 2) {
                 expectedAdEntry = getExpectedAdEntry(mockData);
 
-                partnerModule.parseResponse(1, mockData, returnParcels);
+                partnerModule.__parseResponse(1, mockData, returnParcels);
 
                 for (var i = 0; i < expectedAdEntry.length; i++){
                     expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i]));
@@ -248,7 +248,7 @@ describe('parseResponse', function () {
                 for (var i = 0; i < mockData.length; i++) {
                     expectedAdEntry[i] = getExpectedAdEntry(mockData)[i];
 
-                    partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                    partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                     for (var j = 0; j < expectedAdEntry[i].length; j++) {
                         expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i][j]));
@@ -278,12 +278,12 @@ describe('parseResponse', function () {
         it('each parcel should have the required fields set', function () {
 
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
 
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                 var result = inspector.validate({
                     type: 'object',
@@ -304,12 +304,12 @@ describe('parseResponse', function () {
         it('each parcel should have the correct values set', function () {
 
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
 
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                 /* Add test cases to test against each of the parcel's set fields
                  * to make sure the response was parsed correctly.
@@ -327,13 +327,13 @@ describe('parseResponse', function () {
 
             /* IF SRA, parse all parcels at once */
             if (partnerProfile.architecture === 1 || partnerProfile.architecture === 2) {
-                partnerModule.parseResponse(1, mockData, returnParcels);
+                partnerModule.__parseResponse(1, mockData, returnParcels);
 
                 expect(registerAd).to.not.have.been.called;
             } else if (partnerProfile.architecture === 0) {
                 /* IF MRA, parse one parcel at a time */
                 for (i = 0; i < returnParcels.length; i++) {
-                    partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                    partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                     expect(registerAd).to.not.have.been.called;
                 }
@@ -361,12 +361,12 @@ describe('parseResponse', function () {
         /* Simple type checking on the returned objects, should always pass */
         it('each parcel should have the required fields set', function () {
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
 
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                 var result = inspector.validate({
                     type: 'object',
@@ -428,12 +428,12 @@ describe('parseResponse', function () {
         /* ---------- ADD MORE TEST CASES TO TEST AGAINST REAL VALUES ------------*/
         it('each parcel should have the correct values set', function () {
             /* IF SRA, parse all parcels at once */
-            if (partnerProfile.architecture) partnerModule.parseResponse(1, mockData, returnParcels);
+            if (partnerProfile.architecture) partnerModule.__parseResponse(1, mockData, returnParcels);
 
             for (var i = 0; i < returnParcels.length; i++) {
 
                 /* IF MRA, parse one parcel at a time */
-                if (!partnerProfile.architecture) partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                if (!partnerProfile.architecture) partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                 /* Add test cases to test against each of the parcel's set fields
                  * to make sure the response was parsed correctly.
@@ -453,7 +453,7 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture === 1 || partnerProfile.architecture === 2) {
                 expectedAdEntry = getExpectedAdEntry(mockData);
 
-                partnerModule.parseResponse(1, mockData, returnParcels);
+                partnerModule.__parseResponse(1, mockData, returnParcels);
 
                 for (var i = 0; i < expectedAdEntry.length; i++){
                     expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i]));
@@ -463,7 +463,7 @@ describe('parseResponse', function () {
                 for (var i = 0; i < mockData.length; i++) {
                     expectedAdEntry[i] = getExpectedAdEntry(mockData[i]);
 
-                    partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                    partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                     for (var j = 0; j < expectedAdEntry[i].length; j++) {
                         expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i][j]));
@@ -498,7 +498,7 @@ describe('parseResponse', function () {
             if (partnerProfile.architecture === 1 || partnerProfile.architecture === 2) {
                 expectedAdEntry = getExpectedAdEntry(mockData);
 
-                partnerModule.parseResponse(1, mockData, returnParcels);
+                partnerModule.__parseResponse(1, mockData, returnParcels);
 
                 for (var i = 0; i < expectedAdEntry.length; i++){
                     expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i]));
@@ -508,7 +508,7 @@ describe('parseResponse', function () {
                 for (var i = 0; i < mockData.length; i++) {
                     expectedAdEntry[i] = getExpectedAdEntry(mockData[i]);
 
-                    partnerModule.parseResponse(1, mockData[i], [returnParcels[i]]);
+                    partnerModule.__parseResponse(1, mockData[i], [returnParcels[i]]);
 
                     for (var j = 0; j < expectedAdEntry[i].length; j++) {
                         expect(registerAd).to.have.been.calledWith(sinon.match(expectedAdEntry[i][j]));

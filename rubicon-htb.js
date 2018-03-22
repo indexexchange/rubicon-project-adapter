@@ -31,7 +31,7 @@ var RenderService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
-var Inspector = require('schema-inspector');
+var Inspector = require('schema-inspector.js');
 var PartnerSpecificValidator = require('rubicon-htb-validator.js');
 var Scribe = require('scribe.js');
 //? }
@@ -265,12 +265,17 @@ function RubiconModule(configs) {
                     try {
                     var _window = window.top;
                     } catch(e) {
-                        console.log("impossible to reach top window");
+                        console.log("impossible to reach top window, get topmost accessible window context  ");
+                        var _window = Browser.topWindow;
                     }
                 } else {
                     var _window = window;
                 }
-                var digiTrustUser =  (_digiTrustId || _window.DigiTrust.getUser({member: 'T9QSFKPDN9'})) 
+                try {
+                    var digiTrustUser =  (_digiTrustId || _window.DigiTrust.getUser({member: 'T9QSFKPDN9'}))
+                } catch(e) {
+                    console.log("digiTrustUser not defined");
+                }
                 return digiTrustUser || null;
             }
             var digiTrustId = getDigiTrustId();
@@ -284,7 +289,7 @@ function RubiconModule(configs) {
                 pref: 0
             }
             return _dt;
-        }    
+        }
     /**
      * Generates the request URL to the endpoint for the xSlots in the given
      * returnParcels.
@@ -787,7 +792,7 @@ function RubiconModule(configs) {
          * ---------------------------------- */
 
         //? if (TEST) {
-        profile: __profile,
+        __profile: __profile,
         __baseUrl: __baseUrl,
         //? }
 
@@ -797,8 +802,8 @@ function RubiconModule(configs) {
         setFirstPartyData: setFirstPartyData,
 
         //? if (TEST) {
-        parseResponse: __parseResponse,
-        generateRequestObj: __generateRequestObj
+        __parseResponse: __parseResponse,
+        __generateRequestObj: __generateRequestObj
         //? }
     };
 
