@@ -31,7 +31,7 @@ var RenderService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
-var Inspector = require('schema-inspector');
+var Inspector = require('schema-inspector.js');
 var PartnerSpecificValidator = require('rubicon-htb-validator.js');
 var Scribe = require('scribe.js');
 //? }
