@@ -54,17 +54,9 @@ var libraryStubData = {
             return arr[0] + 'x' + arr[1];
         },
         stringToArray: function (arr) {
-                var result = []; 
-                var temp = [];
-                var temp2 = [];
-                temp = arr.split(",");
-                for (var i = 0; i < temp.length; i++) {
-                temp2.push(temp[i].replace("x",","));
-                }
-                for (var i = 0; i < temp2.length; i++) {
-                result.push(new Array(Number(temp2[i].split(",")[0]), Number(temp2[i].split(",")[1])));
-                }
-            return result[0];
+                return arr.split(",")[0].split("x").map(function (elem) {
+                    return Number(elem);
+                });
         },        
     },
     'network.js': {
@@ -153,12 +145,7 @@ var libraryStubData = {
             return !Number.isNaN(value);
         },
         isString: function(string){
-            if (typeof myVar === 'string' || myVar instanceof String){
-                return true;
-            }
-            else{
-                return false;
-            }
+            return typeof myVar === 'string' || myVar instanceof String;
         }
     },
     'whoopsie.js': function () {

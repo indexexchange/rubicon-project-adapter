@@ -114,7 +114,7 @@ describe('Partner Profile', function () {
                                 if (targetingSplit[0] !== 'ix' ||
                                     targetingSplit[1] !== profile.statsId.toLowerCase() ||
                                     targetingSplit[2] !== 'om') {
-                                    this.report('om tageting key should be of the format ix_RUBI_cpm')
+                                    this.report('om tageting key should be of the format ix_RUBI_om')
                                 }
                             }
                         },
@@ -126,7 +126,7 @@ describe('Partner Profile', function () {
                                 if (targetingSplit[0] !== 'ix' ||
                                     targetingSplit[1] !== profile.statsId.toLowerCase() ||
                                     targetingSplit[2] !== 'pm') {
-                                    this.report('pm tageting key should be of the format ix_RUBI_cpm')
+                                    this.report('pm tageting key should be of the format ix_RUBI_pm')
                                 }
                             }
                         }

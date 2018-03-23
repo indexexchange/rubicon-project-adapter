@@ -31,7 +31,7 @@ var RenderService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
-var Inspector = require('schema-inspector.js');
+var Inspector = require('schema-inspector');
 var PartnerSpecificValidator = require('rubicon-htb-validator.js');
 var Scribe = require('scribe.js');
 //? }
@@ -92,8 +92,6 @@ function RubiconModule(configs) {
     var __sizeToSizeIdMapping;
 
     var __pageFirstPartyData;
-
-    var _digiTrustId;
 
     /* =====================================
      * Functions
@@ -257,39 +255,36 @@ function RubiconModule(configs) {
     }
 
     function _getDigiTrustQueryParams() {
-        if (configs.digitrustId) {
-            _digiTrustId = configs.digitrustId;
-        }
-            function getDigiTrustId() {
-                if (!Browser.isTopFrame()) {
-                    try {
-                    var _window = window.top;
-                    } catch(e) {
-                        console.log("impossible to reach top window, get topmost accessible window context  ");
-                        var _window = Browser.topWindow;
-                    }
-                } else {
-                    var _window = window;
-                }
+        function getDigiTrustId() {
+            if (!Browser.isTopFrame()) {
                 try {
-                    var digiTrustUser =  (_digiTrustId || _window.DigiTrust.getUser({member: 'T9QSFKPDN9'}))
+                var _window = window.top;
                 } catch(e) {
-                    console.log("digiTrustUser not defined");
+                    console.log("impossible to reach top window, get topmost accessible window context  ");
+                    var _window = Browser.topWindow;
                 }
-                return digiTrustUser || null;
+            } else {
+                var _window = window;
             }
-            var digiTrustId = getDigiTrustId();
-            // Verify there is an ID and this user has not opted out
-            if (!digiTrustId || (digiTrustId.privacy && digiTrustId.privacy.optout)) {
-            return {};
+            try {
+                var digiTrustUser =  (_digiTrustId || _window.DigiTrust.getUser({member: 'T9QSFKPDN9'}))
+            } catch(e) {
+                console.log("digiTrustUser not defined");
             }
-            var _dt = {
-                id: digiTrustId.id,
-                keyv: digiTrustId.keyv,
-                pref: 0
-            }
-            return _dt;
+            return digiTrustUser || null;
         }
+        var digiTrustId = configs.digitrustId || getDigiTrustId();
+        // Verify there is an ID and this user has not opted out
+        if (!digiTrustId || (digiTrustId.privacy && digiTrustId.privacy.optout)) {
+        return {};
+        }
+        var _dt = {
+            id: digiTrustId.id,
+            keyv: digiTrustId.keyv,
+            pref: 0
+        }
+        return _dt;
+    }
     /**
      * Generates the request URL to the endpoint for the xSlots in the given
      * returnParcels.
@@ -758,7 +753,6 @@ function RubiconModule(configs) {
             '480x320': 101,
             '768x1024': 102,
             '480x280': 103,
-            '320x240': 108, 
             '1000x300': 113,
             '320x100': 117,
             '800x250': 125,
