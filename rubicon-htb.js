@@ -267,7 +267,7 @@ function RubiconModule(configs) {
                 var _window = window;
             }
             try {
-                var digiTrustUser =  (_digiTrustId || _window.DigiTrust.getUser({member: 'T9QSFKPDN9'}))
+                var digiTrustUser =  _window.DigiTrust.getUser({member: 'T9QSFKPDN9'});
             } catch(e) {
                 console.log("digiTrustUser not defined");
             }
