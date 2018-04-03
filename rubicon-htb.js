@@ -563,6 +563,7 @@ function RubiconModule(configs) {
                 }
 
                 curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId]; //jshint ignore:line
+                curReturnParcel.targeting.hb_pb_rubicon = targetingCpm;  //add Rubicon keys
             } else {
                 var sizeKey = Size.arrayToString(curReturnParcel.size);
 
