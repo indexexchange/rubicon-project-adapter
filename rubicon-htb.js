@@ -28,6 +28,7 @@ var Utilities = require('utilities.js');
 var Whoopsie = require('whoopsie.js');
 var EventsService;
 var RenderService;
+var ComplianceService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
@@ -382,6 +383,9 @@ function RubiconModule(configs) {
 
         var rubiSizeIds = __mapSizesToRubiconSizeIds(parcel.xSlotRef.sizes);
         var referrer = Browser.getPageUrl();
+        
+        var gdprConsent = ComplianceService.gdpr.getConsent();
+        var privacyEnabled = ComplianceService.isPrivacyEnabled();
 
         var queryObj = {
             account_id: configs.accountId, //jshint ignore:line
@@ -397,6 +401,13 @@ function RubiconModule(configs) {
             rand: Math.random(),
             dt: _getDigiTrustQueryParams()
         };
+        
+        if (gdprConsent && privacyEnabled) {
+            if (typeof gdprConsent.applies === 'boolean') {
+                queryObj.gdpr = Number(gdprConsent.applies);
+            }
+            queryObj.gdpr_consent = gdprConsent.consentString;
+        }    
 
         for (var pageInv in pageFirstPartyData.inventory) {
             if (!pageFirstPartyData.inventory.hasOwnProperty(pageInv)) {
@@ -674,6 +685,7 @@ function RubiconModule(configs) {
     (function __constructor() {
         EventsService = SpaceCamp.services.EventsService;
         RenderService = SpaceCamp.services.RenderService;
+        ComplianceService = SpaceCamp.services.ComplianceService;
 
         __profile = {
             partnerId: 'RubiconHtb',
