@@ -28,6 +28,7 @@ var Utilities = require('utilities.js');
 var Whoopsie = require('whoopsie.js');
 var EventsService;
 var RenderService;
+var ComplianceService;
 
 //? if (DEBUG) {
 var ConfigValidators = require('config-validators.js');
@@ -134,7 +135,7 @@ function RubiconModule(configs) {
                 continue;
             }
             if (__sizeToSizeIdMapping[sizeKey] === Number(rubiconSize)) {
-                return Size.stringToArray(sizeKey)[0];
+                return Size.stringToArray(sizeKey);
             }
         }
         //? if(DEBUG) {
@@ -254,6 +255,37 @@ function RubiconModule(configs) {
         return firstPartyData;
     }
 
+    function _getDigiTrustQueryParams() {
+        function getDigiTrustId() {
+            if (!Browser.isTopFrame()) {
+                try {
+                var _window = window.top;
+                } catch(e) {
+                    console.log("impossible to reach top window, get topmost accessible window context  ");
+                    var _window = Browser.topWindow;
+                }
+            } else {
+                var _window = window;
+            }
+            try {
+                var digiTrustUser =  _window.DigiTrust.getUser({member: 'T9QSFKPDN9'});
+            } catch(e) {
+                console.log("digiTrustUser not defined");
+            }
+            return (digiTrustUser && digiTrustUser.success && digiTrustUser.identity) || null;
+        }
+        var digiTrustId = configs.digitrustId || getDigiTrustId();
+        // Verify there is an ID and this user has not opted out
+        if (!digiTrustId || (digiTrustId.privacy && digiTrustId.privacy.optout)) {
+        return {};
+        }
+        var _dt = {
+            id: digiTrustId.id,
+            keyv: digiTrustId.keyv,
+            pref: 0
+        }
+        return _dt;
+    }
     /**
      * Generates the request URL to the endpoint for the xSlots in the given
      * returnParcels.
@@ -351,6 +383,9 @@ function RubiconModule(configs) {
 
         var rubiSizeIds = __mapSizesToRubiconSizeIds(parcel.xSlotRef.sizes);
         var referrer = Browser.getPageUrl();
+        
+        var gdprConsent = ComplianceService.gdpr && ComplianceService.gdpr.getConsent();
+        var privacyEnabled = ComplianceService.isPrivacyEnabled();
 
         var queryObj = {
             account_id: configs.accountId, //jshint ignore:line
@@ -363,8 +398,16 @@ function RubiconModule(configs) {
             zone_id: parcel.xSlotRef.zoneId, //jshint ignore:line
             kw: 'rp.fastlane',
             tk_flint: 'custom', //jshint ignore:line
-            rand: Math.random()
+            rand: Math.random(),
+            dt: _getDigiTrustQueryParams()
         };
+        
+        if (gdprConsent && privacyEnabled && typeof gdprConsent === 'object') {
+            if (typeof gdprConsent.applies === 'boolean') {
+                queryObj.gdpr = Number(gdprConsent.applies);
+            }
+            queryObj.gdpr_consent = gdprConsent.consentString;
+        }    
 
         for (var pageInv in pageFirstPartyData.inventory) {
             if (!pageFirstPartyData.inventory.hasOwnProperty(pageInv)) {
@@ -531,6 +574,7 @@ function RubiconModule(configs) {
                 }
 
                 curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId]; //jshint ignore:line
+                curReturnParcel.targeting.hb_pb_rubicon = targetingCpm;  //add Rubicon keys
             } else {
                 var sizeKey = Size.arrayToString(curReturnParcel.size);
 
@@ -641,6 +685,7 @@ function RubiconModule(configs) {
     (function __constructor() {
         EventsService = SpaceCamp.services.EventsService;
         RenderService = SpaceCamp.services.RenderService;
+        ComplianceService = SpaceCamp.services.ComplianceService;
 
         __profile = {
             partnerId: 'RubiconHtb',
@@ -721,6 +766,7 @@ function RubiconModule(configs) {
             '480x320': 101,
             '768x1024': 102,
             '480x280': 103,
+            '320x240': 108,
             '1000x300': 113,
             '320x100': 117,
             '800x250': 125,
@@ -765,7 +811,8 @@ function RubiconModule(configs) {
         setFirstPartyData: setFirstPartyData,
 
         //? if (TEST) {
-        __parseResponse: __parseResponse
+        __parseResponse: __parseResponse,
+        __generateRequestObj: __generateRequestObj
         //? }
     };
 

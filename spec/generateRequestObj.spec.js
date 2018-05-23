@@ -64,14 +64,14 @@ describe('generateRequestObj', function () {
     var inspector = require('schema-inspector');
     var proxyquire = require('proxyquire').noCallThru();
     var libraryStubData = require('./support/libraryStubData.js');
-    var partnerModule = proxyquire('../rubicon-project-htb.js', libraryStubData);
+    var partnerModule = proxyquire('../rubicon-htb.js', libraryStubData);
     var partnerConfig = require('./support/mockPartnerConfig.json');
     var expect = require('chai').expect;
     /* -------------------------------------------------------------------- */
 
     /* Instantiate your partner module */
     var partnerModule = partnerModule(partnerConfig);
-    var partnerProfile = partnerModule.profile;
+    var partnerProfile = partnerModule.__profile;
 
     /* Generate dummy return parcels based on MRA partner profile */
     var returnParcels;
@@ -82,7 +82,7 @@ describe('generateRequestObj', function () {
 
     /* -------- IF SRA, generate a single request for each parcel -------- */
     if (partnerProfile.architecture) {
-        requestObject = partnerModule.generateRequestObj(returnParcels);
+        requestObject = partnerModule.__generateRequestObj(returnParcels);
 
         /* Simple type checking, should always pass */
         it('SRA - should return a correctly formatted object', function () {
@@ -127,7 +127,7 @@ describe('generateRequestObj', function () {
     /* ---------- IF MRA, generate a single request for each parcel ---------- */
     } else {
         for (var i = 0; i < returnParcels.length; i++) {
-            requestObject = partnerModule.generateRequestObj([returnParcels[i]]);
+            requestObject = partnerModule.__generateRequestObj([returnParcels[i]]);
 
             /* Simple type checking, should always pass */
             it('MRA - should return a correctly formatted object', function () {
