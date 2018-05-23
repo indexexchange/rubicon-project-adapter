@@ -384,7 +384,7 @@ function RubiconModule(configs) {
         var rubiSizeIds = __mapSizesToRubiconSizeIds(parcel.xSlotRef.sizes);
         var referrer = Browser.getPageUrl();
         
-        var gdprConsent = ComplianceService.gdpr.getConsent();
+        var gdprConsent = ComplianceService.gdpr && ComplianceService.gdpr.getConsent();
         var privacyEnabled = ComplianceService.isPrivacyEnabled();
 
         var queryObj = {
@@ -402,7 +402,7 @@ function RubiconModule(configs) {
             dt: _getDigiTrustQueryParams()
         };
         
-        if (gdprConsent && privacyEnabled) {
+        if (gdprConsent && privacyEnabled && typeof gdprConsent === 'object') {
             if (typeof gdprConsent.applies === 'boolean') {
                 queryObj.gdpr = Number(gdprConsent.applies);
             }
