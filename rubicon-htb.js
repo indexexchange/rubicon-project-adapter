@@ -272,7 +272,7 @@ function RubiconModule(configs) {
             } catch(e) {
                 console.log("digiTrustUser not defined");
             }
-            return digiTrustUser || null;
+            return (digiTrustUser && digiTrustUser.success && digiTrustUser.identity) || null;
         }
         var digiTrustId = configs.digitrustId || getDigiTrustId();
         // Verify there is an ID and this user has not opted out
