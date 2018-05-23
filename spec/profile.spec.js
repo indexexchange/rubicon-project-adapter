@@ -29,14 +29,14 @@ describe('Partner Profile', function () {
     var inspector = require('schema-inspector');
     var proxyquire = require('proxyquire').noCallThru();
     var libraryStubData = require('./support/libraryStubData.js');
-    var partnerModule = proxyquire('../rubicon-project-htb.js', libraryStubData);
+    var partnerModule = proxyquire('../rubicon-htb.js', libraryStubData);
     var partnerConfig = require('./support/mockPartnerConfig.json');
     var expect = require('chai').expect;
     /* -------------------------------------------------------------------- */
 
     /* Instantiate your partner module */
     var partnerModule = partnerModule(partnerConfig);
-    var partnerProfile = partnerModule.profile;
+    var partnerProfile = partnerModule.__profile;
 
     /* partner module profile tests */
     var profile = partnerProfile;
@@ -49,7 +49,7 @@ describe('Partner Profile', function () {
             properties: {
                 partnerId: {
                     type: 'string',
-                    eq: 'RubiconProjectHtb'
+                    eq: 'RubiconHtb'
                 },
                 namespace: {
                     type: 'string',
@@ -113,8 +113,8 @@ describe('Partner Profile', function () {
 
                                 if (targetingSplit[0] !== 'ix' ||
                                     targetingSplit[1] !== profile.statsId.toLowerCase() ||
-                                    targetingSplit[2] !== 'cpm') {
-                                    this.report('om tageting key should be of the format ix_RUBI_cpm')
+                                    targetingSplit[2] !== 'om') {
+                                    this.report('om tageting key should be of the format ix_RUBI_om')
                                 }
                             }
                         },
@@ -125,20 +125,8 @@ describe('Partner Profile', function () {
 
                                 if (targetingSplit[0] !== 'ix' ||
                                     targetingSplit[1] !== profile.statsId.toLowerCase() ||
-                                    targetingSplit[2] !== 'cpm') {
-                                    this.report('pm tageting key should be of the format ix_RUBI_cpm')
-                                }
-                            }
-                        },
-                        pmid: {
-                            type: 'string',
-                            exec: function (schema, post) {
-                                var targetingSplit = post.split('_');
-
-                                if (targetingSplit[0] !== 'ix' ||
-                                    targetingSplit[1] !== profile.statsId.toLowerCase() ||
-                                    targetingSplit[2] !== 'dealid') {
-                                    this.report('pmid tageting key should be of the format ix_RUBI_dealid')
+                                    targetingSplit[2] !== 'pm') {
+                                    this.report('pm tageting key should be of the format ix_RUBI_pm')
                                 }
                             }
                         }
