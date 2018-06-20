@@ -43,6 +43,7 @@ function generateReturnParcels(profile, partnerConfig) {
                     partnerId: profile.partnerId,
                     htSlot: htSlot,
                     ref: "",
+                    xSlotName: xSlotName,
                     xSlotRef: partnerConfig.xSlots[xSlotName],
                     requestId: '_' + Date.now()
                 });
@@ -127,8 +128,9 @@ describe('generateRequestObj', function () {
     /* ---------- IF MRA, generate a single request for each parcel ---------- */
     } else {
         for (var i = 0; i < returnParcels.length; i++) {
+             console.log(returnParcels[i]);
             requestObject = partnerModule.__generateRequestObj([returnParcels[i]]);
-
+            console.log(requestObject);
             /* Simple type checking, should always pass */
             it('MRA - should return a correctly formatted object', function () {
                 var result = inspector.validate({
@@ -140,7 +142,25 @@ describe('generateRequestObj', function () {
                             minLength: 1
                         },
                         data: {
-                            type: 'object'
+                            type: 'object',
+                            properties: {
+                                account_id: {
+                                    type: 'string',
+                                    minLength: 1
+                                },
+                                site_id: {
+                                    type: 'string',
+                                    minLength: 1
+                                },
+                                zone_id: {
+                                    type: 'string',
+                                    minLength: 1
+                                },
+                                size_id: {
+                                    type: 'integer',
+                                    minLength: 1
+                                },
+                            }
                         },
                         callbackId: {
                             type: 'string',
