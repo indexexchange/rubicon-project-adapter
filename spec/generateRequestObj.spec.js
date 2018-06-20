@@ -128,9 +128,7 @@ describe('generateRequestObj', function () {
     /* ---------- IF MRA, generate a single request for each parcel ---------- */
     } else {
         for (var i = 0; i < returnParcels.length; i++) {
-             console.log(returnParcels[i]);
             requestObject = partnerModule.__generateRequestObj([returnParcels[i]]);
-            console.log(requestObject);
             /* Simple type checking, should always pass */
             it('MRA - should return a correctly formatted object', function () {
                 var result = inspector.validate({
