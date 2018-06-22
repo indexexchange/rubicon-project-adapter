@@ -54,9 +54,10 @@ var libraryStubData = {
             return arr[0] + 'x' + arr[1];
         },
         stringToArray: function (arr) {
-                return arr.split(",")[0].split("x").map(function (elem) {
-                    return Number(elem);
-                });
+                 return new Array(arr.split(",")[0].split("x").reduce(function (acc, elem) {
+                    acc.push(elem);
+                    return acc;
+                }, []));
         },        
     },
     'network.js': {
@@ -123,7 +124,20 @@ var libraryStubData = {
                 registerAd: function () {
                     return '_' + Math.random().toString(36).substr(2, 9);
                 }
-            }
+            },
+            ComplianceService: {
+                gdpr: {
+                    getConsent: function (){
+                        return {
+                            applies: true,
+                            consentString: "BOQ7WlgOQ7WlgABABwAAABJOACgACAAQABA"
+                        }
+                    },
+                },
+                isPrivacyEnabled: function(){
+                        return true;
+                }                
+            },
         },
     },
     'system.js': {
