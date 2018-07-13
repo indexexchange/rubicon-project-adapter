@@ -135,7 +135,7 @@ function RubiconModule(configs) {
                 continue;
             }
             if (__sizeToSizeIdMapping[sizeKey] === Number(rubiconSize)) {
-                return Size.stringToArray(sizeKey);
+                return Size.stringToArray(sizeKey)[0];
             }
         }
         //? if(DEBUG) {

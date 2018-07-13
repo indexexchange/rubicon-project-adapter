@@ -1,26 +1,31 @@
 {
-    "timeout": 1000,
-    "accountId": 1234,
-    "digitrustId": "test1234",
+    "timeout": 2000,
+    "accountId": "14062",
+    "digitrustId": {
+        "id": "test",
+        "keyv": "test2"
+    },
     "xSlots": {
         "1": {
-            "placementId": "54321",
+            "siteId": "201878",
+            "zoneId": "993672",
             "sizes": [
-                [300, 250],
+                [970, 250],
                 [728, 90]
             ]
         },
         "2": {
-            "placementId": "12345",
+            "siteId": "201878",
+            "zoneId": "993672",
             "sizes": [
-                [300, 600],
                 [728, 90]
             ]
         },
         "3": {
-            "placementId": "654321",
+            "siteId": "201878",
+            "zoneId": "993674",
             "sizes": [
-                [728, 90]
+                [300, 250]
             ]
         }
     },
