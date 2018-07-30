@@ -770,7 +770,8 @@ function RubiconModule(configs) {
             '1000x300': 113,
             '320x100': 117,
             '800x250': 125,
-            '200x600': 126
+            '200x600': 126,
+            '970x1000': 264
         };
 
         __baseUrl = Browser.getProtocol() + '//fastlane.rubiconproject.com/a/api/fastlane.json';
