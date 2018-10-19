@@ -1,4 +1,4 @@
-# RubiconProject
+# Rubicon
 ## General Compatibility
 |Feature|  |
 |---|---|
@@ -26,7 +26,7 @@
 ## Adapter Information
 | Info | |
 |---|---|
-| Partner Id | RubiconProjectHtb |
+| Partner Id | RubiconHtb |
 | Ad Server Responds in (Cents, Dollars, etc) | |
 | Bid Type (Gross / Net) | |
 | GAM Key (Open Market) | |
