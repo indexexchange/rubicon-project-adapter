@@ -10,6 +10,10 @@
  * prior written permission of Index Exchange.
  */
 
+/* eslint no-eval: 0 */
+/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+/* eslint camelcase: [2, {properties: "never"}] */
+
 'use strict';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +30,7 @@ var SpaceCamp = require('space-camp.js');
 var System = require('system.js');
 var Utilities = require('utilities.js');
 var Whoopsie = require('whoopsie.js');
+
 var EventsService;
 var RenderService;
 var ComplianceService;
@@ -46,8 +51,8 @@ var Scribe = require('scribe.js');
  *
  * @class
  */
-function RubiconModule(configs) {
 
+function RubiconModule(configs) {
     /* Rubicon endpoint only works with AJAX */
     if (!Network.isXhrSupported()) {
         //? if (DEBUG) {
@@ -134,6 +139,7 @@ function RubiconModule(configs) {
             if (!__sizeToSizeIdMapping.hasOwnProperty(sizeKey)) {
                 continue;
             }
+
             if (__sizeToSizeIdMapping[sizeKey] === Number(rubiconSize)) {
                 return Size.stringToArray(sizeKey)[0];
             }
@@ -141,6 +147,7 @@ function RubiconModule(configs) {
         //? if(DEBUG) {
         Scribe.warn('Unknown rubicon size id ' + rubiconSize);
         //? }
+
         return [];
     }
 
@@ -152,6 +159,7 @@ function RubiconModule(configs) {
             Scribe.error('Error evaluating variable ' + variableString + ': ' + ex);
             //? }
         }
+
         return null;
     }
 
@@ -163,6 +171,7 @@ function RubiconModule(configs) {
             Scribe.error('Error evaluating function ' + functionString + ': ' + ex);
             //? }
         }
+
         return null;
     }
 
@@ -182,7 +191,7 @@ function RubiconModule(configs) {
                 for (var i = 0; i < vars[varsKey].length; i++) {
                     var evaledVariable = __evalVariable(vars[varsKey][i]);
 
-                    if (evaledVariable !== null && evaledVariable !== undefined) {
+                    if (evaledVariable !== null && evaledVariable !== 'undefined') {
                         returnSubobject[varsKey].push(evaledVariable);
                     }
                 }
@@ -217,7 +226,7 @@ function RubiconModule(configs) {
 
                 var evaledValue = __evalFunction(fns[fnsKey].fn, fns[fnsKey].args);
 
-                if (evaledValue !== null && evaledValue !== undefined) {
+                if (evaledValue !== null && evaledValue !== 'undefined') {
                     if (Utilities.isArray(evaledValue)) {
                         for (var k = 0; k < evaledValue.length; k++) {
                             returnSubobject[fnsKey].push(evaledValue[k]);
@@ -238,12 +247,15 @@ function RubiconModule(configs) {
         if (fpdObject.inventory) {
             firstPartyData.inventory = __transformFpdSubobject(fpdObject.inventory);
         }
+
         if (fpdObject.visitor) {
             firstPartyData.visitor = __transformFpdSubobject(fpdObject.visitor);
         }
+
         if (fpdObject.position) {
             firstPartyData.position = fpdObject.position;
         }
+
         if (fpdObject.keywords) {
             if (Utilities.isString(fpdObject.keywords)) {
                 firstPartyData.keywords = [fpdObject.keywords];
@@ -257,35 +269,43 @@ function RubiconModule(configs) {
 
     function _getDigiTrustQueryParams() {
         function getDigiTrustId() {
+            var digiTrustUser;
+            var _window;
+
             if (!Browser.isTopFrame()) {
                 try {
-                var _window = window.top;
-                } catch(e) {
-                    console.log("impossible to reach top window, get topmost accessible window context  ");
-                    var _window = Browser.topWindow;
+                    _window = window.top;
+                } catch (e) {
+                    console.warn('impossible to reach top window, get topmost accessible window context');
+                    _window = Browser.topWindow;
                 }
             } else {
-                var _window = window;
+                _window = window;
             }
+
             try {
-                var digiTrustUser =  _window.DigiTrust.getUser({member: 'T9QSFKPDN9'});
-            } catch(e) {
-                console.log("digiTrustUser not defined");
+                digiTrustUser = _window.DigiTrust.getUser({ member: 'T9QSFKPDN9' });
+            } catch (e) {
+                console.warn('digiTrustUser not defined');
             }
+
             return (digiTrustUser && digiTrustUser.success && digiTrustUser.identity) || null;
         }
         var digiTrustId = configs.digitrustId || getDigiTrustId();
+
         // Verify there is an ID and this user has not opted out
         if (!digiTrustId || (digiTrustId.privacy && digiTrustId.privacy.optout)) {
-        return {};
+            return {};
         }
         var _dt = {
             id: digiTrustId.id,
             keyv: digiTrustId.keyv,
             pref: 0
-        }
+        };
+
         return _dt;
     }
+
     /**
      * Generates the request URL to the endpoint for the xSlots in the given
      * returnParcels.
@@ -293,6 +313,7 @@ function RubiconModule(configs) {
      * @param  {object[]} returnParcels [description]
      * @return {string}            [description]
      */
+
     function __generateRequestObj(returnParcels) {
         //? if (DEBUG){
         var results = Inspector.validate({
@@ -383,31 +404,31 @@ function RubiconModule(configs) {
 
         var rubiSizeIds = __mapSizesToRubiconSizeIds(parcel.xSlotRef.sizes);
         var referrer = Browser.getPageUrl();
-        
+
         var gdprConsent = ComplianceService.gdpr && ComplianceService.gdpr.getConsent();
         var privacyEnabled = ComplianceService.isPrivacyEnabled();
 
         var queryObj = {
-            account_id: configs.accountId, //jshint ignore:line
-            size_id: rubiSizeIds[0], //jshint ignore:line
-            p_pos: slotFirstPartyData.position ? slotFirstPartyData.position : 'btf', //jshint ignore:line
-            rp_floor: 0.01, //jshint ignore:line
+            account_id: configs.accountId,
+            size_id: rubiSizeIds[0],
+            p_pos: slotFirstPartyData.position ? slotFirstPartyData.position : 'btf',
+            rp_floor: 0.01,
             rf: referrer ? referrer : '',
-            p_screen_res: Browser.getScreenWidth() + 'x' + Browser.getScreenHeight(), //jshint ignore:line
-            site_id: parcel.xSlotRef.siteId, //jshint ignore:line
-            zone_id: parcel.xSlotRef.zoneId, //jshint ignore:line
+            p_screen_res: Browser.getScreenWidth() + 'x' + Browser.getScreenHeight(),
+            site_id: parcel.xSlotRef.siteId,
+            zone_id: parcel.xSlotRef.zoneId,
             kw: 'rp.fastlane',
-            tk_flint: 'custom', //jshint ignore:line
+            tk_flint: 'custom',
             rand: Math.random(),
             dt: _getDigiTrustQueryParams()
         };
-        
+
         if (gdprConsent && privacyEnabled && typeof gdprConsent === 'object') {
             if (typeof gdprConsent.applies === 'boolean') {
                 queryObj.gdpr = Number(gdprConsent.applies);
             }
             queryObj.gdpr_consent = gdprConsent.consentString;
-        }    
+        }
 
         for (var pageInv in pageFirstPartyData.inventory) {
             if (!pageFirstPartyData.inventory.hasOwnProperty(pageInv)) {
@@ -415,45 +436,54 @@ function RubiconModule(configs) {
             }
             queryObj['tg_i.' + pageInv] = pageFirstPartyData.inventory[pageInv].toString();
         }
+
         for (var slotInv in slotFirstPartyData.inventory) {
             if (!slotFirstPartyData.inventory.hasOwnProperty(slotInv)) {
                 continue;
             }
+
             if (queryObj.hasOwnProperty('tg_i.' + slotInv)) {
-                queryObj['tg_i.' + slotInv] += (',' + slotFirstPartyData.inventory[slotInv].toString());
+                queryObj['tg_i.' + slotInv] += ',' + slotFirstPartyData.inventory[slotInv].toString();
             } else {
                 queryObj['tg_i.' + slotInv] = slotFirstPartyData.inventory[slotInv].toString();
             }
         }
+
         for (var pageVis in pageFirstPartyData.visitor) {
             if (!pageFirstPartyData.visitor.hasOwnProperty(pageVis)) {
                 continue;
             }
             queryObj['tg_v.' + pageVis] = pageFirstPartyData.visitor[pageVis].toString();
         }
+
         for (var slotVis in slotFirstPartyData.visitor) {
             if (!slotFirstPartyData.visitor.hasOwnProperty(slotVis)) {
                 continue;
             }
+
             if (queryObj.hasOwnProperty('tg_v.' + slotVis)) {
-                queryObj['tg_v.' + slotVis] += (',' + slotFirstPartyData.visitor[slotVis].toString());
+                queryObj['tg_v.' + slotVis] += ',' + slotFirstPartyData.visitor[slotVis].toString();
             } else {
                 queryObj['tg_v.' + slotVis] = slotFirstPartyData.visitor[slotVis].toString();
             }
         }
         var keywords = [];
+
         if (pageFirstPartyData.keywords) {
             keywords = keywords.concat(pageFirstPartyData.keywords);
         }
+
         if (slotFirstPartyData.keywords) {
             keywords = keywords.concat(slotFirstPartyData.keywords);
         }
+
         if (keywords.length > 0) {
-            queryObj.kw += (',' + keywords.toString());
+            queryObj.kw += ',' + keywords.toString();
         }
 
         if (rubiSizeIds.length > 1) {
-            queryObj.alt_size_ids = rubiSizeIds.slice(1).join(','); //jshint ignore:line
+            queryObj.alt_size_ids = rubiSizeIds.slice(1)
+                .join(',');
         }
 
         return {
@@ -466,7 +496,7 @@ function RubiconModule(configs) {
     /* Helpers
      * ---------------------------------- */
 
-    /* parses adResponse and ads any demand into outParcels */
+    /* Parses adResponse and ads any demand into outParcels */
     function __parseResponse(sessionId, adResponse, returnParcels) {
         //? if (DEBUG){
         var results = Inspector.validate({
@@ -493,7 +523,7 @@ function RubiconModule(configs) {
         }
         //? }
 
-        /* prepare the info to send to header stats */
+        /* Prepare the info to send to header stats */
         var headerStatsInfo = {
             sessionId: sessionId,
             statsId: __profile.statsId
@@ -515,7 +545,8 @@ function RubiconModule(configs) {
                one parcel */
             if (i === 0) {
                 curReturnParcel = returnParcels[0];
-                /* fill out the other required headerstats info from the parcel */
+
+                /* Fill out the other required headerstats info from the parcel */
                 headerStatsInfo.htSlotId = curReturnParcel.htSlot.getId();
                 headerStatsInfo.requestId = curReturnParcel.requestId;
                 headerStatsInfo.xSlotNames = [curReturnParcel.xSlotName];
@@ -536,21 +567,33 @@ function RubiconModule(configs) {
 
             if (bids[i].status !== 'ok' || !Utilities.isNumber(bidPrice) || bidPrice <= 0) {
                 //? if (DEBUG) {
-                Scribe.info(__profile.partnerId + ' returned no demand for { zoneId: ' + curReturnParcel.xSlotRef.zoneId + ' }.');
+                Scribe.info(__profile.partnerId
+                    + ' returned no demand for { zoneId: '
+                    + curReturnParcel.xSlotRef.zoneId
+                    + ' }.');
                 //? }
 
                 curReturnParcel.pass = true;
+
                 continue;
             }
 
             bidReceived = true;
 
             var bidDealId = bids[i].deal || '';
-            var bidSize = __mapRubiconSizeIdToSize(bids[i].size_id); //jshint ignore:line
-            var bidCreative = '<html><head><scr' + 'ipt type="text/javascript">inDapIF=true;</scr' + 'ipt>' +
-                '</head><body style="margin : 0; padding: 0;"><!-- Rubicon Project Ad Tag -->' +
-                '<div data-rp-impression-id="' + bids[i].impression_id + '">' + //jshint ignore:line
-                '<scr' + 'ipt type="text/javascript">' + bids[i].script + '</scr' + 'ipt></div></body></html>';
+            var bidSize = __mapRubiconSizeIdToSize(bids[i].size_id);
+            var bidCreative = '<html><head><scr'
+                + 'ipt type="text/javascript">inDapIF=true;</scr'
+                + 'ipt>'
+                + '</head><body style="margin : 0; padding: 0;"><!-- Rubicon Project Ad Tag -->'
+                + '<div data-rp-impression-id="'
+                + bids[i].impression_id
+                + '">'
+                + '<scr'
+                + 'ipt type="text/javascript">'
+                + bids[i].script
+                + '</scr'
+                + 'ipt></div></body></html>';
 
             curReturnParcel.size = bidSize;
             curReturnParcel.targetingType = 'slot';
@@ -561,34 +604,40 @@ function RubiconModule(configs) {
 
             //? if(FEATURES.GPT_LINE_ITEMS) {
             targetingCpm = __baseClass._bidTransformers.targeting.apply(bidPrice);
+
             if (__baseClass._configs.lineItemType === Constants.LineItemTypes.CUSTOM) {
-                if (!bids[i].targeting) {
-                    continue;
+                if (bids[i].targeting) {
+                    var rubiTargeting = bids[i].targeting;
+                    rubiSizeId = bids[i].size_id;
+
+                    for (var j = 0; j < rubiTargeting.length; j++) {
+                        curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
+                    }
                 }
 
-                var rubiTargeting = bids[i].targeting;
-                rubiSizeId = bids[i].size_id; //jshint ignore:line
-
-                for (var j = 0; j < rubiTargeting.length; j++) {
-                    curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
+                if (bidDealId) {
+                    curReturnParcel.targeting.hb_deal_ixrubicon = bidDealId;
                 }
 
-                curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId]; //jshint ignore:line
-                curReturnParcel.targeting.hb_pb_rubicon = targetingCpm;  //add Rubicon keys
+                curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId];
+                curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
             } else {
                 var sizeKey = Size.arrayToString(curReturnParcel.size);
 
                 if (bidDealId) {
+                    curReturnParcel.targeting.hb_deal_ixrubicon = bidDealId;
                     curReturnParcel.targeting[__baseClass._configs.targetingKeys.pm] = [sizeKey + '_' + bidDealId];
                 }
 
-                /* set the om key as long as they sent _something_ in the cpm, even if it was zero */
+                /* Set the om key as long as they sent _something_ in the cpm, even if it was zero */
                 if (bids[i].hasOwnProperty('cpm')) {
                     curReturnParcel.targeting[__baseClass._configs.targetingKeys.om] = [sizeKey + '_' + targetingCpm];
                 }
 
+                curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
                 curReturnParcel.targeting[__baseClass._configs.targetingKeys.id] = [curReturnParcel.requestId];
             }
+
             //? }
 
             //? if(FEATURES.RETURN_CREATIVE) {
@@ -605,9 +654,9 @@ function RubiconModule(configs) {
                 adm: bidCreative,
                 requestId: curReturnParcel.requestId,
                 size: rubiSizeId ? rubiSizeId : curReturnParcel.size,
-                price: targetingCpm ? targetingCpm : undefined,
-                dealId: bidDealId ? bidDealId : undefined,
-                timeOfExpiry: __profile.features.demandExpiry.enabled ? (__profile.features.demandExpiry.value + System.now()) : 0
+                price: targetingCpm ? targetingCpm : '',
+                dealId: bidDealId ? bidDealId : '',
+                timeOfExpiry: __profile.features.demandExpiry.enabled ? __profile.features.demandExpiry.value + System.now() : 0 // eslint-disable-line
             });
 
             //? if(FEATURES.INTERNAL_RENDER) {
@@ -691,7 +740,7 @@ function RubiconModule(configs) {
             partnerId: 'RubiconHtb',
             namespace: 'RubiconHtb',
             statsId: 'RUBI',
-            version: '2.1.3',
+            version: '2.1.4',
             targetingType: 'slot',
             enabledAnalytics: {
                 requestTime: true
@@ -770,7 +819,9 @@ function RubiconModule(configs) {
             '1000x300': 113,
             '320x100': 117,
             '800x250': 125,
-            '200x600': 126
+            '200x600': 126,
+            '320x250': 159,
+            '970x1000': 264
         };
 
         __baseUrl = Browser.getProtocol() + '//fastlane.rubiconproject.com/a/api/fastlane.json';

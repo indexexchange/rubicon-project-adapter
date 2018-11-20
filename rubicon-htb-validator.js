@@ -22,7 +22,7 @@ var Inspector = require('../../../libs/external/schema-inspector.js');
 // Main ////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-var partnerValidator = function (configs) {
+function partnerValidator(configs) {
     var result = Inspector.validate({
         type: 'object',
         properties: {
@@ -326,6 +326,6 @@ var partnerValidator = function (configs) {
     }
 
     return null;
-};
+}
 
 module.exports = partnerValidator;
