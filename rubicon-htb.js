@@ -11,7 +11,6 @@
  */
 
 /* eslint no-eval: 0 */
-/* eslint no-console: ["error", { allow: ["warn", "error"] }] */
 /* eslint camelcase: [2, {properties: "never"}] */
 
 'use strict';
@@ -276,7 +275,6 @@ function RubiconModule(configs) {
                 try {
                     _window = window.top;
                 } catch (e) {
-                    console.warn('impossible to reach top window, get topmost accessible window context');
                     _window = Browser.topWindow;
                 }
             } else {
@@ -285,9 +283,7 @@ function RubiconModule(configs) {
 
             try {
                 digiTrustUser = _window.DigiTrust.getUser({ member: 'T9QSFKPDN9' });
-            } catch (e) {
-                console.warn('digiTrustUser not defined');
-            }
+            } catch (e) {}
 
             return (digiTrustUser && digiTrustUser.success && digiTrustUser.identity) || null;
         }
