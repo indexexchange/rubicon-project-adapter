@@ -596,43 +596,35 @@ function RubiconModule(configs) {
             curReturnParcel.targeting = {};
 
             var targetingCpm = '';
-            var rubiSizeId = '';
 
             //? if(FEATURES.GPT_LINE_ITEMS) {
             targetingCpm = __baseClass._bidTransformers.targeting.apply(bidPrice);
 
-            if (__baseClass._configs.lineItemType === Constants.LineItemTypes.CUSTOM) {
-                if (bids[i].targeting) {
-                    var rubiTargeting = bids[i].targeting;
-                    rubiSizeId = bids[i].size_id;
+            if (bids[i].targeting) {
+                var rubiTargeting = bids[i].targeting;
 
-                    for (var j = 0; j < rubiTargeting.length; j++) {
-                        curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
-                    }
+                for (var j = 0; j < rubiTargeting.length; j++) {
+                    curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
                 }
-
-                if (bidDealId) {
-                    curReturnParcel.targeting.hb_deal_ixrubicon = bidDealId;
-                }
-
-                curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId];
-                curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
-            } else {
-                var sizeKey = Size.arrayToString(curReturnParcel.size);
-
-                if (bidDealId) {
-                    curReturnParcel.targeting.hb_deal_ixrubicon = bidDealId;
-                    curReturnParcel.targeting[__baseClass._configs.targetingKeys.pm] = [sizeKey + '_' + bidDealId];
-                }
-
-                /* Set the om key as long as they sent _something_ in the cpm, even if it was zero */
-                if (bids[i].hasOwnProperty('cpm')) {
-                    curReturnParcel.targeting[__baseClass._configs.targetingKeys.om] = [sizeKey + '_' + targetingCpm];
-                }
-
-                curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
-                curReturnParcel.targeting[__baseClass._configs.targetingKeys.id] = [curReturnParcel.requestId];
             }
+
+            curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId];
+            curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
+
+            var sizeKey = Size.arrayToString(curReturnParcel.size);
+
+            if (bidDealId) {
+                curReturnParcel.targeting.hb_deal_ixrubicon = bidDealId;
+                curReturnParcel.targeting[__baseClass._configs.targetingKeys.pm] = [sizeKey + '_' + bidDealId];
+            }
+
+            /* Set the om key as long as they sent _something_ in the cpm, even if it was zero */
+            if (bids[i].hasOwnProperty('cpm')) {
+                curReturnParcel.targeting[__baseClass._configs.targetingKeys.om] = [sizeKey + '_' + targetingCpm];
+            }
+
+            curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
+            curReturnParcel.targeting[__baseClass._configs.targetingKeys.id] = [curReturnParcel.requestId];
 
             //? }
 
@@ -649,7 +641,7 @@ function RubiconModule(configs) {
                 partnerId: __profile.partnerId,
                 adm: bidCreative,
                 requestId: curReturnParcel.requestId,
-                size: rubiSizeId ? rubiSizeId : curReturnParcel.size,
+                size: curReturnParcel.size,
                 price: targetingCpm ? targetingCpm : '',
                 dealId: bidDealId ? bidDealId : '',
                 timeOfExpiry: __profile.features.demandExpiry.enabled ? __profile.features.demandExpiry.value + System.now() : 0 // eslint-disable-line
