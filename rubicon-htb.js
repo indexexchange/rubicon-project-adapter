@@ -614,7 +614,6 @@ function RubiconModule(configs) {
             var sizeKey = Size.arrayToString(curReturnParcel.size);
 
             if (bidDealId) {
-                curReturnParcel.targeting.hb_deal_ixrubicon = bidDealId;
                 curReturnParcel.targeting[__baseClass._configs.targetingKeys.pm] = [sizeKey + '_' + bidDealId];
             }
 
