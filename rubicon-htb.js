@@ -600,31 +600,39 @@ function RubiconModule(configs) {
             //? if(FEATURES.GPT_LINE_ITEMS) {
             targetingCpm = __baseClass._bidTransformers.targeting.apply(bidPrice);
 
-            if (bids[i].targeting) {
-                var rubiTargeting = bids[i].targeting;
+            if (__baseClass._configs.lineItemType === Constants.LineItemTypes.CUSTOM) {
+                if (bids[i].targeting) {
+                    var rubiTargeting = bids[i].targeting;
 
-                for (var j = 0; j < rubiTargeting.length; j++) {
-                    curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
+                    for (var j = 0; j < rubiTargeting.length; j++) {
+                        curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
+                    }
                 }
+                curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId];
+            } else {
+                var sizeKey = Size.arrayToString(curReturnParcel.size);
+
+                if (bidDealId) {
+                    curReturnParcel.targeting[__baseClass._configs.targetingKeys.pm] = [sizeKey + '_' + bidDealId];
+
+                    /* Set the custom KVPs for deal only so Rubicon handle tier deal line items */
+
+                    if (bids[i].targeting) {
+                        var rubiTargetingDeal = bids[i].targeting;
+                        for (var k = 0; k < rubiTargetingDeal.length; k++) {
+                            curReturnParcel.targeting[rubiTargetingDeal[k].key] = rubiTargetingDeal[k].values;
+                        }
+                    }
+                }
+
+                /* Set the om key as long as they sent _something_ in the cpm, even if it was zero */
+
+                if (bids[i].hasOwnProperty('cpm')) {
+                    curReturnParcel.targeting[__baseClass._configs.targetingKeys.om] = [sizeKey + '_' + targetingCpm];
+                }
+
+                curReturnParcel.targeting[__baseClass._configs.targetingKeys.id] = [curReturnParcel.requestId];
             }
-
-            curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId];
-            curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
-
-            var sizeKey = Size.arrayToString(curReturnParcel.size);
-
-            if (bidDealId) {
-                curReturnParcel.targeting[__baseClass._configs.targetingKeys.pm] = [sizeKey + '_' + bidDealId];
-            }
-
-            /* Set the om key as long as they sent _something_ in the cpm, even if it was zero */
-            if (bids[i].hasOwnProperty('cpm')) {
-                curReturnParcel.targeting[__baseClass._configs.targetingKeys.om] = [sizeKey + '_' + targetingCpm];
-            }
-
-            curReturnParcel.targeting.hb_pb_ixrubicon = targetingCpm;
-            curReturnParcel.targeting[__baseClass._configs.targetingKeys.id] = [curReturnParcel.requestId];
-
             //? }
 
             //? if(FEATURES.RETURN_CREATIVE) {

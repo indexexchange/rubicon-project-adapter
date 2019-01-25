@@ -104,7 +104,6 @@ function getValidResponse(request, creative) {
 function validateTargeting(targetingMap) {
 	expect(targetingMap).toEqual(jasmine.objectContaining({
 		ix_rubi_om: jasmine.arrayContaining(["300x250_200"]),
-		hb_pb_ixrubicon: jasmine.arrayContaining(["200"]),
 		ix_rubi_id: jasmine.arrayContaining([jasmine.any(String)])
 	}));
 }
@@ -133,6 +132,54 @@ function getPassResponse() {
 	return JSON.stringify(skipResponse);
 }
 
+
+function getValidResponseWithDeal(request, creative) {
+	var adm = "</script>" + creative + "<script>";
+	var response = {
+		"status": "ok",
+		"account_id": 1234,
+		"site_id": 112233,
+		"zone_id": 556677,
+		"size_id": 15,
+		"tracking": "",
+		"inventory": {
+		},
+		"ads": [
+			{
+				"status": "ok",
+				"impression_id": "1234test-1234-12q1-12e4-c08098test",
+				"size_id": "15",
+				"ad_id": "6789",
+				"advertiser": 5678,
+				"network": 1902,
+				"creative_id": "1902:12345",
+				"type": "script",
+				"script": adm,
+				"campaign_id": 48985,
+				"rtb_rule_id": 1598010,
+				"cpm": 2,
+				"deal": 12345,
+				"targeting": [
+					{
+						"key": "rpfl_1234",
+						"values": ["deal_tierAll"]
+					}
+				]
+			}
+		]
+	};
+
+	return JSON.stringify(response);
+}
+
+function validateTargetingWithDeal(targetingMap) {
+	expect(targetingMap).toEqual(jasmine.objectContaining({
+		ix_rubi_om: jasmine.arrayContaining(["300x250_200"]),
+		ix_rubi_id: jasmine.arrayContaining([jasmine.any(String)]),
+		rpfl_1234: jasmine.arrayContaining(["deal_tierAll"]),
+	}));
+}
+
 module.exports = {
 	getPartnerId: getPartnerId,
 	getBidRequestRegex: getBidRequestRegex,
@@ -144,5 +191,7 @@ module.exports = {
 	validateBidRequestWithPrivacy: validateBidRequestWithPrivacy,
 	getValidResponse: getValidResponse,
 	validateTargeting: validateTargeting,
-	getPassResponse: getPassResponse
+	getPassResponse: getPassResponse,
+	getValidResponseWithDeal: getValidResponseWithDeal,
+	validateTargetingWithDeal: validateTargetingWithDeal
 };
