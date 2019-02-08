@@ -132,7 +132,6 @@ function getPassResponse() {
 	return JSON.stringify(skipResponse);
 }
 
-
 function getValidResponseWithDeal(request, creative) {
 	var adm = "</script>" + creative + "<script>";
 	var response = {
@@ -176,7 +175,7 @@ function validateTargetingWithDeal(targetingMap) {
 	expect(targetingMap).toEqual(jasmine.objectContaining({
 		ix_rubi_om: jasmine.arrayContaining(["300x250_200"]),
 		ix_rubi_id: jasmine.arrayContaining([jasmine.any(String)]),
-		rpfl_1234: jasmine.arrayContaining(["deal_tierAll"]),
+		rpfl_1234: jasmine.arrayContaining(["deal_tierAll"])
 	}));
 }
 
