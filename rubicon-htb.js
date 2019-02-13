@@ -10,9 +10,6 @@
  * prior written permission of Index Exchange.
  */
 
-/* eslint no-eval: 0 */
-/* eslint camelcase: [2, {properties: "never"}] */
-
 'use strict';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +149,9 @@ function RubiconModule(configs) {
 
     function __evalVariable(variableString) {
         try {
+            /* eslint-disable no-eval */
             return eval.call(null, variableString);
+            /* eslint-enable no-eval */
         } catch (ex) {
             //? if (DEBUG) {
             Scribe.error('Error evaluating variable ' + variableString + ': ' + ex);
@@ -164,7 +163,9 @@ function RubiconModule(configs) {
 
     function __evalFunction(functionString, args) {
         try {
+            /* eslint-disable no-eval */
             return eval.call(null, functionString + '(' + args.join() + ')');
+            /* eslint-enable no-eval */
         } catch (ex) {
             //? if (DEBUG) {
             Scribe.error('Error evaluating function ' + functionString + ': ' + ex);
@@ -403,7 +404,7 @@ function RubiconModule(configs) {
 
         var gdprConsent = ComplianceService.gdpr && ComplianceService.gdpr.getConsent();
         var privacyEnabled = ComplianceService.isPrivacyEnabled();
-
+        /* eslint-disable camelcase */
         var queryObj = {
             account_id: configs.accountId,
             size_id: rubiSizeIds[0],
@@ -418,12 +419,14 @@ function RubiconModule(configs) {
             rand: Math.random(),
             dt: _getDigiTrustQueryParams()
         };
-
+        /* eslint-enable camelcase */
         if (gdprConsent && privacyEnabled && typeof gdprConsent === 'object') {
             if (typeof gdprConsent.applies === 'boolean') {
                 queryObj.gdpr = Number(gdprConsent.applies);
             }
+            /* eslint-disable camelcase */
             queryObj.gdpr_consent = gdprConsent.consentString;
+            /* eslint-enable camelcase */
         }
 
         for (var pageInv in pageFirstPartyData.inventory) {
@@ -478,8 +481,10 @@ function RubiconModule(configs) {
         }
 
         if (rubiSizeIds.length > 1) {
+            /* eslint-disable camelcase */
             queryObj.alt_size_ids = rubiSizeIds.slice(1)
                 .join(',');
+            /* eslint-enable camelcase */
         }
 
         return {
@@ -608,7 +613,9 @@ function RubiconModule(configs) {
                         curReturnParcel.targeting[rubiTargeting[j].key] = rubiTargeting[j].values;
                     }
                 }
+                /* eslint-disable camelcase */
                 curReturnParcel.targeting.rpfl_elemid = [curReturnParcel.requestId];
+                /* eslint-enable camelcase */
             } else {
                 var sizeKey = Size.arrayToString(curReturnParcel.size);
 
