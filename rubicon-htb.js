@@ -415,7 +415,7 @@ function RubiconModule(configs) {
             site_id: parcel.xSlotRef.siteId,
             zone_id: parcel.xSlotRef.zoneId,
             kw: 'rp.fastlane',
-            tk_flint: 'custom',
+            tk_flint: 'index',
             rand: Math.random(),
             dt: _getDigiTrustQueryParams()
         };
